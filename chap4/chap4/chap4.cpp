@@ -153,8 +153,10 @@ void main(void){
 	return;
 }
 
-
-
+int *Ptrvar;//nekonstantnii ukazatel' na nekonstantnie dannie
+const int *Ptr; //nekonstantnii ukazatel' na konstantnie dannie, ne dayot modificirovat' dannie, eto esli hotim zaschitit' dannie
+int * const Ptrcon;// konstantnii ukazatel' na nekonstantu- naprimer na massive
+const int * const conPtrcon;//konstatnti vezde
 
 
 
