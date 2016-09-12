@@ -74,6 +74,85 @@ using namespace std;
 //	return  rand() % 6+rand()%6;
 //}
 
+//--------------------ex 4.30-------bucket sort-------ONLY POSITIVE integer in the array
+
+//void bucketsort(int[], int);
+//const int ArraySize = 20;
+//
+//int main(void){
+//
+//	int array[ArraySize] = { 4, 2, 6, 71, 3, 166, 242, 255, 631, 4, 1, 3, 25, 631, 422, 74226, 351, 353, 31, 5 };
+//	int wish;
+//
+//	cout << "want to enter array?1/0" << endl;
+//	cin >> wish;
+//	if (wish == 1){
+//		cout << "enter " << ArraySize << " elements" << endl;
+//		for (int i = 0; i < ArraySize; i++){
+//			cout << i + 1 << ":";
+//			cin >> array[i];
+//		}
+//	}
+//	for (int i = 0; i < ArraySize;i++)
+//		cout << array[i]<<" ";
+//	cout << endl;
+//
+//	bucketsort(array, ArraySize);
+//
+//	for (int i = 0; i < ArraySize; i++)
+//		cout << array[i] << " ";
+//	cout << endl;
+//
+//	return 1;
+//}
+//
+//void bucketsort(int a[], int size){
+//	int SupArray[10][ArraySize] = {};
+//	int max = 0, razryad = 1, count = 0;
+//	for (int i = 0; i < size; i++)
+//		if (max < a[i]) max = a[i];
+//
+//
+//	while (max > 0){
+//		max /= 10;
+//		memset(SupArray, 0, sizeof(SupArray[0][0]) * 10 * size);//zero the array
+//
+//
+//		for (int i = 0; i < size; i++){
+//			SupArray[a[i] / razryad % 10][i] = a[i];
+//		}
+//
+//		count = 0;
+//
+//		for (int k = 0; k < 10; k++){
+//			for (int i = 0; i < size; i++){
+//				if (SupArray[k][i] != 0){
+//					a[count] = SupArray[k][i];
+//					count++;
+//					SupArray[k][i] = 0;
+//				}
+//			}
+//		}
+//
+//		razryad *= 10;
+//	}
+//	return;
+//}
+
+
+/////---------------ukazateli chapter 5==================
+
+void main(void){
+	int a = 10;
+	int *aPtr = &a;
+
+	cout << "Pointer aPtr=" << aPtr << endl;
+	cout << "Value contained at pointer location *aPtr=" << *aPtr << endl;
+	cout << "a=" << a << endl;
+	cout << "adress of a &a=" << &a << endl;
+	return;
+}
+
 
 
 
