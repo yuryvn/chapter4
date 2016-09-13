@@ -6,7 +6,8 @@
 #include <iomanip>
 #include <stdlib.h>
 #include <time.h>
-
+#include <string.h>
+//#define _CRT_SECURE_NO_WARNINGS
 
 using namespace std;
 
@@ -197,7 +198,46 @@ using namespace std;
 //}
 
 
+//--------------------------massive ukazateley na funkcii----------------
+//void func1(const int);
+//void func2(const int);
+//void func3(const int);
+//
+//int main(){
+//	void(*f[3])(const int) = { func1, func2, func3 }; // a vot i massive
+//	int choice, value;
+//	
+//	cout << "choose value:" << endl;
+//	cin >> value;
+//
+//	cout << "choose function 0-'+2';1-'+3';2-'^2':" << endl;
+//	cin >> choice;
+//	(*f[choice])(value);
+//}
+//void func1(const int a){
+//	cout << a + 2;
+//	return;
+//}
+//void func2(const int a){
+//	cout << a + 3;
+//	return;
+//}
+//void func3(const int a){
+//	cout << a*a;
+//	return;
+//}
 
+void main(void){
+	char a[] = "zdes 3 slova";
+	char *Ptr;
+	cout<<a<<endl;
+	Ptr = a;
+	cout << *(Ptr+1)<<endl;
 
+	char *TokenPtr;
 
+	TokenPtr = strtok(a, " ");
+	cout << TokenPtr << "\t" << a << endl;
+	cout << strtok(NULL, " ");
+}
 
