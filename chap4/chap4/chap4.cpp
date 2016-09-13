@@ -141,25 +141,60 @@ using namespace std;
 
 
 /////---------------ukazateli chapter 5==================
+//
+//void main(void){
+//	int a = 10;
+//	int *aPtr = &a;
+//
+//	cout << "Pointer aPtr=" << aPtr << endl;
+//	cout << "Value contained at pointer location *aPtr=" << *aPtr << endl;
+//	cout << "a=" << a << endl;
+//	cout << "adress of a &a=" << &a << endl;
+//	return;
+//}
 
-void main(void){
-	int a = 10;
-	int *aPtr = &a;
+//int *Ptrvar;//nekonstantnii ukazatel' na nekonstantnie dannie
+//const int *Ptr; //nekonstantnii ukazatel' na konstantnie dannie, ne dayot modificirovat' dannie, eto esli hotim zaschitit' dannie
+//int * const Ptrcon;// konstantnii ukazatel' na nekonstantu- naprimer na massive
+//const int * const conPtrcon;//konstatnti vezde
 
-	cout << "Pointer aPtr=" << aPtr << endl;
-	cout << "Value contained at pointer location *aPtr=" << *aPtr << endl;
-	cout << "a=" << a << endl;
-	cout << "adress of a &a=" << &a << endl;
-	return;
-}
+// ------------------sizeof----------------------
 
-int *Ptrvar;//nekonstantnii ukazatel' na nekonstantnie dannie
-const int *Ptr; //nekonstantnii ukazatel' na konstantnie dannie, ne dayot modificirovat' dannie, eto esli hotim zaschitit' dannie
-int * const Ptrcon;// konstantnii ukazatel' na nekonstantu- naprimer na massive
-const int * const conPtrcon;//konstatnti vezde
+//int array[20] = {};
+//double arrayf[20] = {};
+//
+//int main(void){
+//	cout << "int array 20 size=" << sizeof(array) << endl;
+//	cout << "float array 20 size=" << sizeof(arrayf) << endl;
+//
+//}
+//
 
+//-----------------function as parameter-------------
 
-
+//int bigger(const int,const int);
+//int smaller(const int,const int);
+//int compare(const int, const int, int (*)(const int, const int));
+//
+//int main(void){
+//	int a = 1;
+//	int b = 2;
+//
+//	cout << a << "<" << b << "? " << compare(a, b, smaller)<<endl;
+//	cout << a << ">" << b << "? " << compare(a, b, bigger)<<endl;
+//	return 0;
+//}
+//int bigger(const int a, const int b){
+//	if (a > b) return 1;
+//	else return 0;
+//}
+//int smaller(const int a, const int b){
+//	if (a < b) return 1;
+//	else return 0;
+//}
+//int compare(const int a, const int b, int (*funcparam)(const int, const int)){
+//	return funcparam(a, b);
+//}
 
 
 
