@@ -227,17 +227,76 @@ using namespace std;
 //	return;
 //}
 
-void main(void){
-	char a[] = "zdes 3 slova";
-	char *Ptr;
-	cout<<a<<endl;
-	Ptr = a;
-	cout << *(Ptr+1)<<endl;
+//void main(void){
+//	char a[] = "zdes 3 slova";
+//	char *Ptr;
+//	cout<<a<<endl;
+//	Ptr = a;
+//	cout << *(Ptr+1)<<endl;
+//
+//	char *TokenPtr;
+//
+//	TokenPtr = strtok(a, " ");
+//	cout << TokenPtr << "\t" << a << endl;
+//	cout << strtok(NULL, " ");
+//}
+//
 
-	char *TokenPtr;
+//--------------------playing cards
 
-	TokenPtr = strtok(a, " ");
-	cout << TokenPtr << "\t" << a << endl;
-	cout << strtok(NULL, " ");
+void Shuffle(int *,const int size);
+const int DeckSize = 54;
+void Sdacha(const int *, const int size);
+
+char *masti[4] = { "Piki", "Kresti", "Buby", "Chervi" };
+char *cardvalue[13] = { "Tuz", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Valet", "Dama", "King" };
+char *PokerHand[8] = { "Para", "2 Pary", "Troika", "Street", "Flash", "Full House", "Poker", "Flash Royal"};
+
+int main(void){
+
+	int Deck[DeckSize] = {};
+
+	srand(time(NULL));
+
+	Shuffle(Deck, DeckSize);
+	Sdacha(Deck, 10);
+
+	return 1;
 }
 
+void Shuffle(int *Deck, const int size){
+	int ShuffleHelp1[DeckSize] = {};
+	int Card;
+
+	for (int i = 0; i < DeckSize; ShuffleHelp1[i] = i++ + 1);
+
+	for (int i = 0; i < DeckSize; i++){
+		Card = rand() % (DeckSize - i) + 1;
+		*(Deck+i) = ShuffleHelp1[Card];
+		for (int count = Card; (ShuffleHelp1[count] != 0) && (count < DeckSize); count++)
+			count == (DeckSize - 1) ? ShuffleHelp1[count] = 0 : ShuffleHelp1[count] = ShuffleHelp1[count + 1];
+	}
+	return;
+}
+
+void Sdacha(const int *Deck, const int NumberOfCards){
+	int Card1,Card2;
+	for (int count = 0; count < NumberOfCards/2; count++){
+		Card1 = *(Deck + count);
+		Card2 = *(Deck + count + NumberOfCards / 2);
+		//first card goes into first player hand
+		if (Card1 > 52) cout << setw(15)<<"Joker"<<"\t";
+		else cout << setw(8)<<right<<cardvalue[(Card1 - 1) % 13] << " " << setw(6)<<masti[(Card1 - 1) / 13] << "\t";
+
+		//second player hand
+		if (Card2 > 52) cout << setw(15) << "Joker" << endl;
+		else cout << setw(8) << right << cardvalue[(Card2 - 1) % 13] << " " << setw(6) << masti[(Card2 - 1) / 13] << endl;
+	}
+
+	return;
+}
+
+
+int PokerCheck(const int *hand, const int size){
+
+}
