@@ -252,9 +252,9 @@ int PokerCheck(int *Hand, const int size=5);
 void PrintHand(const int Hand[], const int size = 5);
 
 
-char *masti[4] = { "Piki", "Kresti", "Buby", "Chervi" };
-char *cardvalue[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Valet", "Dama", "King", "Tuz"};
-char *PokerHand[9] = { "Para", "2 Pary", "Troika", "Straight", "Flush", "Full House", "Poker", "Straight Flush","Royal Flush"};
+const char *masti[4] = { "Piki", "Kresti", "Buby", "Chervi" };
+const char *cardvalue[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Valet", "Dama", "King", "Tuz"};
+const char *PokerHand[9] = { "Para", "2 Pary", "Troika", "Straight", "Flush", "Full House", "Poker", "Straight Flush","Royal Flush"};
 
 int main(void){
 	int PlayerHand[5] = {};
@@ -266,7 +266,6 @@ int main(void){
 
 	Shuffle(Deck, DeckSize);
 
-
 	while (restart == 1||restart==2){
 		if (5 * sdach > (DeckSize - 5)){
 			cout << "Automatic reshuffle as deck is empty" << endl;
@@ -274,14 +273,18 @@ int main(void){
 			Shuffle(Deck, DeckSize);
 		}
 		Sdacha_v_ruku(Deck, PlayerHand,5*sdach);
+		cout << endl;
 		PrintHand(PlayerHand, 5);
 		PlayerHandEvaluation=PokerCheck(PlayerHand, 5);
+		cout << endl;
+		PrintHand(PlayerHand, 5);
+		cout << endl;
 		BigCard = PlayerHandEvaluation / 10;
 
 		if (PlayerHandEvaluation % 10 == 0) cout << "You have nothing on your hand";
-		else cout << "You have " << PokerHand[PlayerHandEvaluation % 10]; 
+		else cout << "You have " << PokerHand[PlayerHandEvaluation % 10-1]; 
 
-		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard - 1) % 13] << " " << setw(6) << masti[(BigCard - 1) / 13] << endl;
+		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard-1) % 13] << " " << setw(6) << masti[(BigCard-1) / 13] << endl;
 
 		sdach++;
 		cout << "peresdat'=1; tasovat'=2; exit=0: ";
@@ -304,16 +307,17 @@ void Shuffle(int *Deck, const int size){
 	for (int i = 0; i < DeckSize; ShuffleHelp1[i] = i++ + 1);
 
 	for (int i = 0; i < DeckSize; i++){
-		Card = rand() % (DeckSize - i) + 1;
+		Card = rand() % (DeckSize - i);
 		*(Deck+i) = ShuffleHelp1[Card];
 		for (int count = Card; (ShuffleHelp1[count] != 0) && (count < DeckSize); count++)
 			count == (DeckSize - 1) ? ShuffleHelp1[count] = 0 : ShuffleHelp1[count] = ShuffleHelp1[count + 1];
 	}
+
 	return;
 }
 
 
-void Sdacha_v_ruku(const int *Deck, int hand[5],const int StartCard=0,const int HandSize=5){
+void Sdacha_v_ruku(const int *Deck, int hand[5],const int StartCard,const int HandSize){
 	if (StartCard + HandSize > DeckSize) { cout << "reshuffle deck"; return; }
 	for (int i = 0; i < HandSize; hand[i] = Deck[StartCard + i++]);
 	return;
@@ -348,9 +352,17 @@ void PrintHand(const int Hand[], const int size){
 //}
 
 
-void bucketsort(int a[], const int size){
+void bucketsort(int a[], int b[], const int size){
 	int SupArray[10][5] = {};
+	int SupportArrayB[5] = {};
 	int max = 0, razryad = 1, count = 0;
+
+	//ensure that there is no 0 in array a, as bucket sort does nothandle it. note that the value of kard "2" is zero
+	// do it in for cycle as a[i]++
+	//at the end of the function need to do a[i]--
+
+
+	for (int i = 0; i < size; a[i]++, SupportArrayB[i] = b[i], i++); //make suparrb equal to b
 
 	for (int i = 0; i < size; i++)
 		if (max < a[i]) max = a[i];
@@ -371,43 +383,69 @@ void bucketsort(int a[], const int size){
 			for (int i = 0; i < size; i++){
 				if (SupArray[k][i] != 0){
 					a[count] = SupArray[k][i];
+					b[count] = SupportArrayB[i]; //make same motion for array b element
 					count++;
 					SupArray[k][i] = 0;
 				}
 			}
 		}
-		
+		for (int i = 0; i < size; SupportArrayB[i] = b[i], i++); //make suparrb equal to b after each step of assambling disassembling of array a
 		razryad *= 10;
 	}
+	for (int i = 0; i < size; a[i++]--);
 	return;
 }
 
 int PokerCheck(int *Hand, const int size){//will return number corresponding to poker hand (biggest card code*10+hand code)
-	void bucketsort(int a[], const int size);
+	void bucketsort(int a[], int b[], const int size);
 	int suits[5] = {}, values[5] = {};
-	int result, flush = 1, straight = 1, para = 0, pary2 = -1, troika = -1, fullhouse = -2, poker = -2;
+	int flush = 1, straight = 1, para = 0, pary2 = -1, troika = -1, fullhouse = -2, poker = -2;
 	int BiggestCard = size-1; //starting from the position of the card
-
-	bucketsort(Hand, size);
+	int exchange;
+	
 	for (int i = 0; i < size; i++){
-		suits[i] = (Hand[i] - 1) % 13;
-		values[i] = (Hand[i] - 1) / 13;
+		suits[i] = (Hand[i] - 1) / 13;
+		values[i] = (Hand[i] - 1) % 13;
 	}
+
+	bucketsort(values,suits, size); //sort by value
+	//sort with regards to suit
+	for (int i = size - 1; i > 0; i--) {
+		for (int j = 1; j <= i; j++){
+			if ((values[j - 1] == values[j]) && (suits[j - 1] >> suits[j])){
+				exchange = suits[j];
+				suits[j] = suits[j - 1];
+				suits[j - 1] = exchange;
+
+				exchange = values[j];
+				values[j] = values[j - 1];
+				values[j - 1] = exchange;
+			}
+		}
+	}
+
+
+	//reassemble the hand
+	for (int i = 0; i < size; i++){
+		Hand[i] = suits[i] * 13 + values[i] + 1;
+	}
+
 	for (int i = 1; i < size; i++){
 		if (suits[i] != suits[i - 1]) flush = 0;
 		if (values[i] != values[i - 1] + 1) straight = 0;
 		if (values[i] == values[i - 1]) { poker++; fullhouse++; troika++; para++; pary2++; BiggestCard = i; }
-		if (troika) if (values[i - 1] == values[i]) pary2 = -2;
+		if (troika>0) if (values[i - 2] != values[i]) troika = -2;
 	}
 
-	BiggestCard = values[BiggestCard]; //now it is actaul card
+	BiggestCard = suits[BiggestCard] * 13 + values[BiggestCard] + 1; //now it is actual card
+
 
 	if (poker > 0 && (values[0] == values[1] && values[3] == values[4]))  return 6 + 10 * BiggestCard; 
-	else return 7 + 10 * BiggestCard;
-	if (fullhouse>0){ para = 0; pary2 = 0; troika = 0; }
+	else if (poker > 0) return 7 + 10 * BiggestCard;;
+
 	if (troika>0)	return 3 + 10 * BiggestCard;
 	if (pary2 > 0) return 2+10 * BiggestCard;
-	if (para > 0)return 1 + 10 * BiggestCard;
+	if (para > 0) return 1 + 10 * BiggestCard;
 
 	if (flush == 1 && straight == 1&& BiggestCard==12) return 9 + 10 * BiggestCard;
 	if (flush == 1 && straight == 1) return 8 + 10 * BiggestCard;
