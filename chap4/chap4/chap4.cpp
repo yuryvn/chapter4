@@ -245,23 +245,56 @@ using namespace std;
 //--------------------playing cards
 
 void Shuffle(int *,const int size);
-const int DeckSize = 54;
+const int DeckSize = 52;
 void Sdacha(const int *, const int size);
+void Sdacha_v_ruku(const int *Deck, int hand[5], const int StartCard = 0, const int HandSize = 5);
+int PokerCheck(int *Hand, const int size=5);
+void PrintHand(const int Hand[], const int size = 5);
+
 
 char *masti[4] = { "Piki", "Kresti", "Buby", "Chervi" };
-char *cardvalue[13] = { "Tuz", "2", "3", "4", "5", "6", "7", "8", "9", "10", "Valet", "Dama", "King" };
-char *PokerHand[8] = { "Para", "2 Pary", "Troika", "Street", "Flash", "Full House", "Poker", "Flash Royal"};
+char *cardvalue[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Valet", "Dama", "King", "Tuz"};
+char *PokerHand[9] = { "Para", "2 Pary", "Troika", "Straight", "Flush", "Full House", "Poker", "Straight Flush","Royal Flush"};
 
 int main(void){
-
+	int PlayerHand[5] = {};
+	int PlayerHandEvaluation = 0, BigCard = 0;
 	int Deck[DeckSize] = {};
+	int restart = 1, sdach = 0;
 
 	srand(time(NULL));
 
 	Shuffle(Deck, DeckSize);
-	Sdacha(Deck, 10);
 
+
+	while (restart == 1||restart==2){
+		if (5 * sdach > (DeckSize - 5)){
+			cout << "Automatic reshuffle as deck is empty" << endl;
+			sdach = 0;
+			Shuffle(Deck, DeckSize);
+		}
+		Sdacha_v_ruku(Deck, PlayerHand,5*sdach);
+		PrintHand(PlayerHand, 5);
+		PlayerHandEvaluation=PokerCheck(PlayerHand, 5);
+		BigCard = PlayerHandEvaluation / 10;
+
+		if (PlayerHandEvaluation % 10 == 0) cout << "You have nothing on your hand";
+		else cout << "You have " << PokerHand[PlayerHandEvaluation % 10]; 
+
+		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard - 1) % 13] << " " << setw(6) << masti[(BigCard - 1) / 13] << endl;
+
+		sdach++;
+		cout << "peresdat'=1; tasovat'=2; exit=0: ";
+		cin >> restart;
+		if (restart == 2) {
+			Shuffle(Deck, DeckSize);
+			sdach = 0;
+		}
+
+	}
 	return 1;
+
+
 }
 
 void Shuffle(int *Deck, const int size){
@@ -279,24 +312,109 @@ void Shuffle(int *Deck, const int size){
 	return;
 }
 
-void Sdacha(const int *Deck, const int NumberOfCards){
-	int Card1,Card2;
-	for (int count = 0; count < NumberOfCards/2; count++){
-		Card1 = *(Deck + count);
-		Card2 = *(Deck + count + NumberOfCards / 2);
-		//first card goes into first player hand
-		if (Card1 > 52) cout << setw(15)<<"Joker"<<"\t";
-		else cout << setw(8)<<right<<cardvalue[(Card1 - 1) % 13] << " " << setw(6)<<masti[(Card1 - 1) / 13] << "\t";
 
-		//second player hand
-		if (Card2 > 52) cout << setw(15) << "Joker" << endl;
-		else cout << setw(8) << right << cardvalue[(Card2 - 1) % 13] << " " << setw(6) << masti[(Card2 - 1) / 13] << endl;
-	}
-
+void Sdacha_v_ruku(const int *Deck, int hand[5],const int StartCard=0,const int HandSize=5){
+	if (StartCard + HandSize > DeckSize) { cout << "reshuffle deck"; return; }
+	for (int i = 0; i < HandSize; hand[i] = Deck[StartCard + i++]);
 	return;
 }
 
+void PrintHand(const int Hand[], const int size){
+	int Card = 0;
+	for (int count = 0; count < size; count++){
+		Card = *(Hand + count);
 
-int PokerCheck(const int *hand, const int size){
-
+		if (Card > 52) cout << setw(15) << "Joker" << endl;
+		else cout << setw(8) << right << cardvalue[(Card - 1) % 13] << " " << setw(6) << masti[(Card - 1) / 13] << endl;
+	}
 }
+
+
+//void Sdacha(const int *Deck, const int NumberOfCards){
+//	int Card1,Card2;
+//	for (int count = 0; count < NumberOfCards/2; count++){
+//		Card1 = *(Deck + count);
+//		Card2 = *(Deck + count + NumberOfCards / 2);
+//		//first card goes into first player hand
+//		if (Card1 > 52) cout << setw(15)<<"Joker"<<"\t";
+//		else cout << setw(8)<<right<<cardvalue[(Card1 - 1) % 13] << " " << setw(6)<<masti[(Card1 - 1) / 13] << "\t";
+//
+//		//second player hand
+//		if (Card2 > 52) cout << setw(15) << "Joker" << endl;
+//		else cout << setw(8) << right << cardvalue[(Card2 - 1) % 13] << " " << setw(6) << masti[(Card2 - 1) / 13] << endl;
+//	}
+//
+//	return;
+//}
+
+
+void bucketsort(int a[], const int size){
+	int SupArray[10][5] = {};
+	int max = 0, razryad = 1, count = 0;
+
+	for (int i = 0; i < size; i++)
+		if (max < a[i]) max = a[i];
+		
+		
+	while (max > 0){
+		max /= 10;
+		memset(SupArray, 0, sizeof(SupArray[0][0]) * 10 * size);//zero the array
+		
+		
+		for (int i = 0; i < size; i++){
+			SupArray[a[i] / razryad % 10][i] = a[i];
+		}
+		
+		count = 0;
+		
+		for (int k = 0; k < 10; k++){
+			for (int i = 0; i < size; i++){
+				if (SupArray[k][i] != 0){
+					a[count] = SupArray[k][i];
+					count++;
+					SupArray[k][i] = 0;
+				}
+			}
+		}
+		
+		razryad *= 10;
+	}
+	return;
+}
+
+int PokerCheck(int *Hand, const int size){//will return number corresponding to poker hand (biggest card code*10+hand code)
+	void bucketsort(int a[], const int size);
+	int suits[5] = {}, values[5] = {};
+	int result, flush = 1, straight = 1, para = 0, pary2 = -1, troika = -1, fullhouse = -2, poker = -2;
+	int BiggestCard = size-1; //starting from the position of the card
+
+	bucketsort(Hand, size);
+	for (int i = 0; i < size; i++){
+		suits[i] = (Hand[i] - 1) % 13;
+		values[i] = (Hand[i] - 1) / 13;
+	}
+	for (int i = 1; i < size; i++){
+		if (suits[i] != suits[i - 1]) flush = 0;
+		if (values[i] != values[i - 1] + 1) straight = 0;
+		if (values[i] == values[i - 1]) { poker++; fullhouse++; troika++; para++; pary2++; BiggestCard = i; }
+		if (troika) if (values[i - 1] == values[i]) pary2 = -2;
+	}
+
+	BiggestCard = values[BiggestCard]; //now it is actaul card
+
+	if (poker > 0 && (values[0] == values[1] && values[3] == values[4]))  return 6 + 10 * BiggestCard; 
+	else return 7 + 10 * BiggestCard;
+	if (fullhouse>0){ para = 0; pary2 = 0; troika = 0; }
+	if (troika>0)	return 3 + 10 * BiggestCard;
+	if (pary2 > 0) return 2+10 * BiggestCard;
+	if (para > 0)return 1 + 10 * BiggestCard;
+
+	if (flush == 1 && straight == 1&& BiggestCard==12) return 9 + 10 * BiggestCard;
+	if (flush == 1 && straight == 1) return 8 + 10 * BiggestCard;
+	if (flush == 1)return 5 + 10 * BiggestCard;
+	if (straight == 1)return 4 + 10 * BiggestCard;
+
+
+	return 10 * BiggestCard;
+}
+
