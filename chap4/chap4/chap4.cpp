@@ -250,6 +250,7 @@ void Sdacha(const int *, const int size);
 void Sdacha_v_ruku(const int *Deck, int hand[5], const int StartCard = 0, const int HandSize = 5);
 int PokerCheck(int *Hand, const int size=5);
 void PrintHand(const int Hand[], const int size = 5);
+int CompareHands(const int Hand1, const int Hand2);
 
 
 const char *masti[4] = { "Piki", "Kresti", "Buby", "Chervi" };
@@ -257,8 +258,8 @@ const char *cardvalue[13] = { "2", "3", "4", "5", "6", "7", "8", "9", "10", "Val
 const char *PokerHand[9] = { "Para", "2 Pary", "Troika", "Straight", "Flush", "Full House", "Poker", "Straight Flush","Royal Flush"};
 
 int main(void){
-	int PlayerHand[5] = {};
-	int PlayerHandEvaluation = 0, BigCard = 0;
+	int PlayerHand1[5] = {}, PlayerHand2[5] = {};
+	int Player1HandEvaluation = 0, Player2HandEvaluation = 0, BigCard = 0;
 	int Deck[DeckSize] = {};
 	int restart = 1, sdach = 0;
 
@@ -267,29 +268,48 @@ int main(void){
 	Shuffle(Deck, DeckSize);
 
 	while (restart == 1||restart==2){
-		if (5 * sdach > (DeckSize - 5)){
+		if (10 * sdach > (DeckSize - 10)){
 			cout << "Automatic reshuffle as deck is empty" << endl;
 			sdach = 0;
 			Shuffle(Deck, DeckSize);
 		}
-		Sdacha_v_ruku(Deck, PlayerHand,5*sdach);
-		cout << endl;
-		PrintHand(PlayerHand, 5);
-		PlayerHandEvaluation=PokerCheck(PlayerHand, 5);
-		cout << endl;
-		PrintHand(PlayerHand, 5);
-		cout << endl;
-		BigCard = PlayerHandEvaluation / 10;
-
-		if (PlayerHandEvaluation % 10 == 0) cout << "You have nothing on your hand";
-		else cout << "You have " << PokerHand[PlayerHandEvaluation % 10-1]; 
-
-		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard-1) % 13] << " " << setw(6) << masti[(BigCard-1) / 13] << endl;
-
+		Sdacha_v_ruku(Deck, PlayerHand1,5*sdach);
 		sdach++;
+		Sdacha_v_ruku(Deck, PlayerHand2, 5 * sdach);
+		sdach++;
+		cout << endl;
+
+		cout << "Player1" << endl;
+		Player1HandEvaluation=PokerCheck(PlayerHand1, 5);
+		PrintHand(PlayerHand1, 5);
+		BigCard = Player1HandEvaluation / 10;
+
+		if (Player1HandEvaluation % 10 == 0) cout << "You have nothing on your hand";
+		else cout << "You have " << PokerHand[Player1HandEvaluation % 10 - 1];
+		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard - 1) % 13] << " " << setw(6) << masti[(BigCard - 1) / 13] << endl;
+		cout << endl;
+//player2----------------------------------------------
+		cout << "Player2" << endl;
+		Player2HandEvaluation = PokerCheck(PlayerHand2, 5);
+		PrintHand(PlayerHand2, 5);
+		BigCard = Player2HandEvaluation / 10;
+
+		if (Player2HandEvaluation % 10 == 0) cout << "You have nothing on your hand";
+		else cout << "You have " << PokerHand[Player2HandEvaluation % 10-1]; 
+		cout << " with biggest card " << setw(8) << right << cardvalue[(BigCard-1) % 13] << " " << setw(6) << masti[(BigCard-1) / 13] << endl;
+		
+		cout << endl;
+		if (CompareHands(Player1HandEvaluation, Player2HandEvaluation) == 1) cout << "PLAYER 1 WINS" << endl;
+		else cout << "PLAYER 2 WINS" << endl;
+
+
+
 		cout << "peresdat'=1; tasovat'=2; exit=0: ";
 		cin >> restart;
 		if (restart == 2) {
+			cout << endl;
+			cout << "---------reshuffling--------";
+			cout << endl;
 			Shuffle(Deck, DeckSize);
 			sdach = 0;
 		}
@@ -409,7 +429,9 @@ int PokerCheck(int *Hand, const int size){//will return number corresponding to 
 	}
 
 	bucketsort(values,suits, size); //sort by value
+
 	//sort with regards to suit
+
 	for (int i = size - 1; i > 0; i--) {
 		for (int j = 1; j <= i; j++){
 			if ((values[j - 1] == values[j]) && (suits[j - 1] >> suits[j])){
@@ -454,5 +476,29 @@ int PokerCheck(int *Hand, const int size){//will return number corresponding to 
 
 
 	return 10 * BiggestCard;
+}
+
+int CompareCard(const int Card1, const int Card2){
+	int suit1 = (Card1 - 1) / 13, suit2 = (Card2 - 1) / 13;
+	int value1 = (Card1 - 1) % 13, value2 = (Card2 - 1) % 13;
+
+	if (value1 > value2) return 1;
+	if (value1 > value2) return 2;
+	if (suit1 > suit2) return 1;
+	else return 2;
+}
+
+int CompareHands(const int Hand1, const int Hand2){
+	int CompareCard(const int Card1, const int Card2);
+
+	int card1 = Hand1 / 10, card2 = Hand2/10;
+	int rasklad1 = Hand1 % 10, rasklad2 = Hand2%10;
+
+	if (rasklad1 > rasklad2) return 1;
+	if (rasklad2 > rasklad1) return 2;
+
+	if (CompareCard(card1, card2) == 1) return 1;
+	else return 2;
+
 }
 
