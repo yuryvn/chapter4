@@ -503,107 +503,199 @@ using namespace std;
 //}
 
 //---------zayac i cherepaha ex 5.17---------
+//
+//int TurtleMove(void);
+//int RabbitMove(void);
+//
+//int main(void){
+//	srand(time(NULL));
+//	char race[71];
+//
+//	int R_position = 0, T_position = 0;
+//	
+//	for (int i = 0; i < 69; race[i++] = ' ');
+//	race[69] = 'F';
+//	race[70] = '\0';
+//
+//	for (; (R_position < 69 || T_position < 69);){
+//
+//		race[R_position] = ' ';
+//		race[T_position] = ' ';
+//
+//		R_position += RabbitMove();
+//		T_position += TurtleMove();
+//
+//		if (R_position < 0) R_position = 0;
+//		if (T_position < 0) T_position = 0;
+//
+//		if (R_position >= 69 && T_position < 69) {
+//			cout << "Rabbit wins"<<endl;
+//			break;
+//		}
+//		if (T_position >= 69 && R_position < 69) {
+//			cout << "Turtle wins" << endl;
+//			break;
+//		}
+//		if (T_position >= 69 && R_position >= 69) {
+//			cout << "Draw" << endl;
+//			break;
+//		}
+//
+//		if (R_position == T_position) 
+//			for (int i = 0; i < 70; i++)
+//				R_position != i ? cout << " " : cout << "Ouch!";
+//		else {
+//			race[R_position] = 'R';
+//			race[T_position] = 'T';
+//			cout << race;
+//		}
+//
+//		cout << endl;
+//		delay(500);
+//		
+//
+//	}
+//
+//
+//	return 0;
+//}
+//
+//int TurtleMove(void){
+//	int selection = rand() % 10 + 1;
+////	cout << selection;
+//
+//	switch (selection)
+//	{
+//	case 1: case 2: case 3: case 4:case 5:{
+//		return 3;
+//		break;
+//	}
+//	case 6: case 7: {
+//		return -6;
+//		break;
+//	}
+//	default:
+//		return 1;
+//		break;
+//	}
+//}
+//
+//int RabbitMove(void){
+//	int selection = rand() % 10 + 1;
+////	cout << selection;
+//
+//	switch (selection)
+//	{
+//	case 1: case 2:{
+//		return 0; //son
+//		break;
+//	}
+//	case 3: case 4: {
+//		return 9; //big leap
+//		break;
+//	}
+//	case 5: {
+//		return -12; //big slip
+//		break;
+//	}
+//	case 6: case 7: case 8:{
+//		return 1; //small leap
+//		break;
+//	}
+//	default:
+//		return -2; //small slip
+//		break;
+//	}
+//}
 
-int TurtleMove(void);
-int RabbitMove(void);
+///quick sort ex.5.24
+
+void quicksort(int *massiv, const int size);
+int find_middle(int *massiv, const int size);
 
 int main(void){
+	const int ArraySize = 15;
+	int forsorting[ArraySize] = {};
+	int position=0;
+
 	srand(time(NULL));
-	char race[71];
 
-	int R_position = 0, T_position = 0;
-	
-	for (int i = 0; i < 69; race[i++] = ' ');
-	race[69] = 'F';
-	race[70] = '\0';
+	for (int i = 0; i < ArraySize; cout << (forsorting[i++] = rand() % 300) << ' ');
+	cout << endl;
+	cout << endl;
 
-	for (; (R_position < 69 || T_position < 69);){
+	quicksort(forsorting, ArraySize);
 
-		race[R_position] = ' ';
-		race[T_position] = ' ';
+	cout << "Aftersort:";
+	for (int i = 0; i < ArraySize; cout << forsorting[i++] << ' ');
+	cout << endl;
 
-		R_position += RabbitMove();
-		T_position += TurtleMove();
 
-		if (R_position < 0) R_position = 0;
-		if (T_position < 0) T_position = 0;
+	return 1;
+}
 
-		if (R_position >= 69 && T_position < 69) {
-			cout << "Rabbit wins"<<endl;
-			break;
+void quicksort(int *massiv, const int size){
+	int item = *massiv;
+
+
+
+	if (size > 1) {
+		item = find_middle(massiv, size);
+		quicksort(massiv, item);
+		if (size-item-1>1) quicksort(massiv + item+1, size - item-1);
+	}
+
+
+	return;
+}
+
+int find_middle(int *massiv, const int size){
+	int item = massiv[0];
+	int change;
+	int *itemposition = massiv;
+	int exit = 0;
+
+	int left = 0, right = size-1;
+
+	while (right>left&&exit==0){
+		exit = 1;
+		for (int i = right; i > left; i--){
+			if (*(massiv + i) < item) {
+				change = *(massiv + i);
+				*(massiv + i) = item;
+				*itemposition = change;
+				itemposition = massiv + i;
+				right = i;
+				left++;
+				exit = 0;
+				break;
+			}
 		}
-		if (T_position >= 69 && R_position < 69) {
-			cout << "Turtle wins" << endl;
-			break;
-		}
-		if (T_position >= 69 && R_position >= 69) {
-			cout << "Draw" << endl;
-			break;
-		}
-
-		if (R_position == T_position) 
-			for (int i = 0; i < 70; i++)
-				R_position != i ? cout << " " : cout << "Ouch!";
-		else {
-			race[R_position] = 'R';
-			race[T_position] = 'T';
-			cout << race;
-		}
-
+		cout << " right=i=" << right << " left=" << left << " exit="<<exit<<endl;
+		for (int k = 0; k < size; cout << massiv[k++] << " ");
 		cout << endl;
-		delay(500);
-		
 
-	}
+		if (exit == 1) break;
 
+		exit = 1;
+		for (int i = left; (i < right); i++){
+			if (*(massiv + i) > item) {
+				change = *(massiv + i);
+				*(massiv + i) = item;
+				*itemposition = change;
+				itemposition = massiv + i;
+				left = i;
+				right--;
+				exit = 0;
+				break;
+			}
+		}
+		cout << " right=" << right << " left=i=" << left << " exit=" << exit << endl;
+		for (int k = 0; k < size; cout << massiv[k++] << " ");
+		cout << endl;
+		cout << endl;
+	}
+	return itemposition - massiv;
+	//return (int)((itemposition - massiv)/sizeof(int));
 
-	return 0;
-}
-
-int TurtleMove(void){
-	int selection = rand() % 10 + 1;
-//	cout << selection;
-
-	switch (selection)
-	{
-	case 1: case 2: case 3: case 4:case 5:{
-		return 3;
-		break;
-	}
-	case 6: case 7: {
-		return -6;
-		break;
-	}
-	default:
-		return 1;
-		break;
-	}
-}
-
-int RabbitMove(void){
-	int selection = rand() % 10 + 1;
-//	cout << selection;
-
-	switch (selection)
-	{
-	case 1: case 2:{
-		return 0; //son
-		break;
-	}
-	case 3: case 4: {
-		return 9; //big leap
-		break;
-	}
-	case 5: {
-		return -12; //big slip
-		break;
-	}
-	case 6: case 7: case 8:{
-		return 1; //small leap
-		break;
-	}
-	default:
-		return -2; //small slip
-		break;
-	}
 }
